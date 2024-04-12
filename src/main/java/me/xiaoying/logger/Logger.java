@@ -1,49 +1,74 @@
 package me.xiaoying.logger;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Logger {
     Class<?> clazz;
     String format;
     LoggerFactory loggerFactory;
     JNILogger jniLogger;
+    String dateFormat = "yyyy/MM/dd-HH:mm:ss";
 
     public Logger(LoggerFactory loggerFactory) {
-        this.format = "[%level%] - %message%";
+        this.format = "[%date%] [%level%] - %message%";
         this.loggerFactory = loggerFactory;
         this.jniLogger = this.loggerFactory.getJniLogger();
     }
 
     public Logger(Class<?> clazz, LoggerFactory loggerFactory) {
         this.clazz = clazz;
-        this.format = "[%level%] - [%class%]: %message%";
+        this.format = "[%date%] [%level%] - [%class%]: %message%";
         this.loggerFactory = loggerFactory;
         this.jniLogger = this.loggerFactory.getJniLogger();
     }
 
-    public void setFormat(String format) {
+    public Logger setFormat(String format) {
         if (format == null || format.isEmpty())
-            return;
+            return this;
 
         this.format = format;
+        return this;
     }
 
     public String getFormat() {
         return this.format;
     }
 
+    public Logger setDateFormat(String dateFormat) {
+        if (format == null || format.isEmpty())
+            return this;
+
+        this.dateFormat = dateFormat;
+        return this;
+    }
+
+    public String getDateFormat() {
+        return this.dateFormat;
+    }
+
     public void info(String message, String... strings) {
         message = this.parameter(message, strings);
 
-        this.jniLogger.send(new VariableFactory(this.format).message(message).clazz(this.clazz).level("&aINFO&f").toString(), "&");
+        String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&aINFO&f").toString();
+        this.jniLogger.send(string, "&");
+        this.loggerFactory.log(string);
     }
 
     public void warn(String message, String... strings) {
         message = this.parameter(message, strings);
-        this.jniLogger.send(new VariableFactory(this.format).message(message).clazz(this.clazz).level("&eWARN&f").toString(), "&");
+
+        String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&eWARN&f").toString();
+        this.jniLogger.send(string, "&");
+        this.loggerFactory.log(string);
     }
 
     public void error(String message, String... strings) {
         message = this.parameter(message, strings);
-        this.jniLogger.send(new VariableFactory(this.format).message(message).clazz(this.clazz).level("&cERROR&f").toString(), "&");
+
+        String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&cERROR&f").toString();
+        this.jniLogger.send(string, "&");
+        this.loggerFactory.log(string);
     }
 
     private String parameter(String message, String... strings) {
@@ -67,6 +92,11 @@ public class Logger {
                 return this;
 
             this.string = this.string.replace("%class%", clacc.getName());
+            return this;
+        }
+
+        public VariableFactory date(String format) {
+            this.string = this.string.replace("%date%", new SimpleDateFormat(format).format(new Date()));
             return this;
         }
 
