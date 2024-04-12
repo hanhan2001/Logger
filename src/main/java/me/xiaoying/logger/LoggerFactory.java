@@ -7,6 +7,10 @@ public class LoggerFactory {
         this.jniLogger = new JNILogger();
     }
 
+    public Logger getLogger() {
+        return new Logger(this);
+    }
+
     public Logger getLogger(Class<?> clazz) {
         return new Logger(clazz, this);
     }
