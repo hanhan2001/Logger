@@ -3,12 +3,13 @@ package me.xiaoying.logger;
 import java.io.*;
 
 public class JNILogger {
+    private File parent = new File(System.getProperty("user.home") + "/AppData/Roaming/XiaoYing/");
     private int VERSION = 1;
 
     public native void send(String message, String altCharColor);
 
     public JNILogger() {
-        File file = new File(System.getProperty("user.home") + "/AppData/Roaming/XiaoYing/JNILogger_" + VERSION + ".dll");
+        File file = new File(this.parent, "JNILogger_" + VERSION + ".dll");
         if (!file.exists())
             this.saveResource(file.getName(), file.getParent());
 
