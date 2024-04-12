@@ -33,7 +33,7 @@ public enum ChatColor {
             if (b[i] != altCharColor || "123456789AaBbCcDdEeFf".indexOf(b[i + 1]) == -1)
                 continue;
 
-            b[i] = 167;
+            b[i] = 38;
             b[i + 1] = Character.toLowerCase(b[i + 1]);
         }
         return new String(b);
