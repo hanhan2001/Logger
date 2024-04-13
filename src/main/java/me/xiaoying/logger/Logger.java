@@ -1,5 +1,8 @@
 package me.xiaoying.logger;
 
+import me.xiaoying.logger.event.EventHandle;
+import me.xiaoying.logger.event.terminal.TerminalWantLogEvent;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -48,6 +51,7 @@ public class Logger {
     }
 
     public void info(String message, String... strings) {
+        EventHandle.callEvent(new TerminalWantLogEvent());
         message = this.parameter(message, strings);
 
         String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&aINFO&f").toString();
@@ -56,6 +60,7 @@ public class Logger {
     }
 
     public void warn(String message, String... strings) {
+        EventHandle.callEvent(new TerminalWantLogEvent());
         message = this.parameter(message, strings);
 
         String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&eWARN&f").toString();
@@ -64,6 +69,7 @@ public class Logger {
     }
 
     public void error(String message, String... strings) {
+        EventHandle.callEvent(new TerminalWantLogEvent());
         message = this.parameter(message, strings);
 
         String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&cERROR&f").toString();
