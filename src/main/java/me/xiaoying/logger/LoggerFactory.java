@@ -34,7 +34,9 @@ public class LoggerFactory {
             if (!this.logPath.exists())
                 this.logPath.createNewFile();
 
-            Files.writeString(Paths.get(this.logPath.getPath()), message + "\n", StandardOpenOption.APPEND);
+            BufferedWriter writer = new BufferedWriter(new FileWriter(this.logPath.getPath(), true));
+            writer.write(message + "\n");
+            writer.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
