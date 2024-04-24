@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.zip.GZIPOutputStream;
 
-public abstract class LoggerFactory {
+public class LoggerFactory {
     private JNILogger jniLogger;
     private File logFile = new File("./logs/latest.log");
     private String defaultName = this.logFile.getParent() + "/" + new VariableFactory("%date%.log.gz").date("yyyy-MM-dd");
