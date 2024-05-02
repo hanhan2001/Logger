@@ -6,40 +6,43 @@ import java.util.Date;
 import java.util.zip.GZIPOutputStream;
 
 public class LoggerFactory {
-    private JNILogger jniLogger;
-    private File logFile = new File("./logs/latest.log");
-    private String defaultName = this.logFile.getParent() + "/" + new VariableFactory("%date%.log.gz").date("yyyy-MM-dd");
-    private String conflictName = this.logFile.getParent() + "/" + new VariableFactory("%date%-%i%.log.gz").date("yyyy-MM-dd");
+    private static JNILogger jniLogger;
+    private static File logFile = new File("./logs/latest.log");
+    private static String defaultName;
+    private static String conflictName;
 
     public LoggerFactory() {
-        this.jniLogger = new JNILogger();
+        defaultName = logFile.getParent() + "/" + new VariableFactory("%date%.log.gz").date("yyyy-MM-dd");
+        conflictName = logFile.getParent() + "/" + new VariableFactory("%date%-%i%.log.gz").date("yyyy-MM-dd");
 
-        if (this.logFile.exists())
+        jniLogger = new JNILogger();
+
+        if (logFile.exists())
             this.save();
     }
 
     public void setLogFile(String file) {
-        this.logFile = new File(file);
+        logFile = new File(file);
     }
 
     public void setLogFile(File file) {
-        this.logFile = file;
+        logFile = file;
     }
 
     public String getDefaultName() {
-        return this.defaultName;
+        return defaultName;
     }
 
     public void setDefaultName(String name) {
-        this.defaultName = name;
+        defaultName = name;
     }
 
     public String getConflictName() {
-        return this.conflictName;
+        return conflictName;
     }
 
     public void setConflictName(String name) {
-        this.conflictName = name;
+        conflictName = name;
     }
 
     public Logger getLogger() {
@@ -53,14 +56,14 @@ public class LoggerFactory {
     public void log(String message) {
         message = ChatColor.stripColor(message);
 
-        if (!this.logFile.getParentFile().exists())
-            this.logFile.getParentFile().mkdirs();
+        if (!logFile.getParentFile().exists())
+            logFile.getParentFile().mkdirs();
 
         try {
-            if (!this.logFile.exists())
-                this.logFile.createNewFile();
+            if (!logFile.exists())
+                logFile.createNewFile();
 
-            BufferedWriter writer = new BufferedWriter(new FileWriter(this.logFile.getPath(), true));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(logFile.getPath(), true));
             writer.write(message + "\n");
             writer.close();
         } catch (IOException e) {
@@ -70,12 +73,12 @@ public class LoggerFactory {
 
     public void save() {
         try {
-            File file = new File(new VariableFactory(this.defaultName).date("yyyy-MM-dd").toString());
+            File file = new File(new VariableFactory(defaultName).date("yyyy-MM-dd").toString());
             for (int i = 1; file.exists(); i++)
-                file = new File(new VariableFactory(this.conflictName).i(i).date("yyyy-MM-dd").toString());
+                file = new File(new VariableFactory(conflictName).i(i).date("yyyy-MM-dd").toString());
 
             GZIPOutputStream gzipOutputStream = new GZIPOutputStream(new FileOutputStream(file));
-            FileInputStream fileInputStream = new FileInputStream(this.logFile);
+            FileInputStream fileInputStream = new FileInputStream(logFile);
             byte[] buf = new byte[1024];
             int len;
             while ((len = fileInputStream.read(buf)) > 0)
@@ -85,17 +88,17 @@ public class LoggerFactory {
             gzipOutputStream.finish();
             gzipOutputStream.close();
 
-            this.logFile.delete();
+            logFile.delete();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public JNILogger getJniLogger() {
-        return this.jniLogger;
+        return jniLogger;
     }
 
-    private class VariableFactory {
+    private static class VariableFactory {
         private String string;
 
         public VariableFactory(String string) {
