@@ -18,7 +18,7 @@ Hmmmm, If you want use this logger, that is a little complex.
 
 ```xml
 <dependency>
-	<groupId>me.xiaoying</groupId>
+    <groupId>me.xiaoying</groupId>
     <artifactId>Logger</artifactId>
     <version>0.0.1</version>
 </dependency>
