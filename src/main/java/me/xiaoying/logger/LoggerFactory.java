@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.zip.GZIPOutputStream;
 
 public class LoggerFactory {
-    private static JNILogger jniLogger = new JNILogger();
+    private static final JNILogger jniLogger = new JNILogger();
     private static File logFile = new File("./logs/latest.log");
     private static String defaultName = logFile.getParent() + "/" + new VariableFactory("%date%.log.gz").date("yyyy-MM-dd");
     private static String conflictName = logFile.getParent() + "/" + new VariableFactory("%date%-%i%.log.gz").date("yyyy-MM-dd");
