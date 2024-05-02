@@ -92,7 +92,13 @@ public class Logger {
     }
     
     private void log(String message) {
+        message = ChatColor.stripColor(message);
+
+        if (!LoggerFactory.getLogFile().getParentFile().exists())
+            LoggerFactory.getLogFile().getParentFile().mkdirs();
+
         try {
+
             if (!LoggerFactory.getLogFile().exists())
                 LoggerFactory.getLogFile().createNewFile();
 

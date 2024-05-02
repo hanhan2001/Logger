@@ -1,14 +1,14 @@
-package me.xiaoying.logger.terminal;
+package me.xiaoying.logger.printstream;
 
 import me.xiaoying.logger.Logger;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
 
-public class LPrintStream extends PrintStream {
+public class LOutPrintStream extends PrintStream {
     private Logger logger;
 
-    public LPrintStream(OutputStream out) {
+    public LOutPrintStream(OutputStream out) {
         super(out);
         this.logger = new Logger();
     }

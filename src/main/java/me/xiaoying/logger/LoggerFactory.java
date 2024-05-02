@@ -1,6 +1,7 @@
 package me.xiaoying.logger;
 
-import me.xiaoying.logger.terminal.LPrintStream;
+import me.xiaoying.logger.printstream.LErrorPrintStream;
+import me.xiaoying.logger.printstream.LOutPrintStream;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -14,8 +15,8 @@ public class LoggerFactory {
     private static String conflictName = logFile.getParent() + "/" + new VariableFactory("%date%-%i%.log.gz").date("yyyy-MM-dd");
 
     static {
-        System.setOut(new LPrintStream(System.out));
-        System.setErr(new LPrintStream(System.out));
+        System.setOut(new LOutPrintStream(System.out));
+        System.setErr(new LErrorPrintStream(System.out));
 
         if (logFile.exists()) save();
     }
