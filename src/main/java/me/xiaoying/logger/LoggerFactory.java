@@ -15,6 +15,7 @@ public class LoggerFactory {
 
     static {
         System.setOut(new LPrintStream(System.out));
+        System.setErr(new LPrintStream(System.out));
 
         if (logFile.exists()) save();
     }
