@@ -82,14 +82,14 @@ public class Logger {
     }
 
     private String parameter(String message, String... strings) {
-        int time = 0;
-        while (message.contains("{}") && time < strings.length) {
-            message = message.replaceFirst("\\{\\}", strings[time]);
-            time++;
+        for (String string : strings) {
+            if (!message.contains("{}"))
+                return message;
+
+            message = message.replaceFirst("\\{}", string);
         }
         return message;
     }
-    
     
     private void log(String message) {
         try {
