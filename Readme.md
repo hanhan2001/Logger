@@ -30,7 +30,7 @@ If want use this logger in gradle, you can set `mavenLocal()`, but I tried this 
 
 ## Example
 
-- [Example Code](https://github.com/hanhan2001/Logger/Example.md)
+- [Example Code](https://github.com/hanhan2001/Logger/blob/master/Example.md)
 
 
 
