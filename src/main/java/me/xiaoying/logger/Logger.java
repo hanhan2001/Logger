@@ -4,27 +4,27 @@ import me.xiaoying.logger.event.EventHandle;
 import me.xiaoying.logger.event.terminal.TerminalLogEndEvent;
 import me.xiaoying.logger.event.terminal.TerminalWantLogEvent;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Logger {
-    Class<?> clazz;
-    String format;
-    LoggerFactory loggerFactory;
-    JNILogger jniLogger;
-    String dateFormat = "yyyy/MM/dd-HH:mm:ss";
+    private Class<?> clazz;
+    private String format;
+    private JNILogger jniLogger;
+    private String dateFormat = "yyyy/MM/dd-HH:mm:ss";
 
-    public Logger(LoggerFactory loggerFactory) {
+    public Logger() {
         this.format = "[%date%] [%level%] - %message%";
-        this.loggerFactory = loggerFactory;
-        this.jniLogger = this.loggerFactory.getJniLogger();
+        this.jniLogger = LoggerFactory.getJniLogger();
     }
 
-    public Logger(Class<?> clazz, LoggerFactory loggerFactory) {
+    public Logger(Class<?> clazz) {
         this.clazz = clazz;
         this.format = "[%date%] [%level%] - [%class%]: %message%";
-        this.loggerFactory = loggerFactory;
-        this.jniLogger = this.loggerFactory.getJniLogger();
+        this.jniLogger = LoggerFactory.getJniLogger();
     }
 
     public Logger setFormat(String format) {
@@ -52,39 +52,33 @@ public class Logger {
     }
 
     public void info(String message, String... strings) {
-        synchronized (this) {
-            EventHandle.callEvent(new TerminalWantLogEvent());
-            message = this.parameter(message, strings);
+        EventHandle.callEvent(new TerminalWantLogEvent());
+        message = this.parameter(message, strings);
 
-            String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&aINFO&f").toString();
-            this.jniLogger.send(string, "&");
-            this.loggerFactory.log(string);
-            EventHandle.callEvent(new TerminalLogEndEvent());
-        }
+        String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&aINFO&f").toString();
+        this.jniLogger.send(string, "&");
+        this.log(string);
+        EventHandle.callEvent(new TerminalLogEndEvent());
     }
 
     public void warn(String message, String... strings) {
-        synchronized (this) {
-            EventHandle.callEvent(new TerminalWantLogEvent());
-            message = this.parameter(message, strings);
+        EventHandle.callEvent(new TerminalWantLogEvent());
+        message = this.parameter(message, strings);
 
-            String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&eWARN&f").toString();
-            this.jniLogger.send(string, "&");
-            this.loggerFactory.log(string);
-            EventHandle.callEvent(new TerminalLogEndEvent());
-        }
+        String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&eWARN&f").toString();
+        this.jniLogger.send(string, "&");
+        this.log(string);
+        EventHandle.callEvent(new TerminalLogEndEvent());
     }
 
     public void error(String message, String... strings) {
-        synchronized (this) {
-            EventHandle.callEvent(new TerminalWantLogEvent());
-            message = this.parameter(message, strings);
+        EventHandle.callEvent(new TerminalWantLogEvent());
+        message = this.parameter(message, strings);
 
-            String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&cERROR&f").toString();
-            this.jniLogger.send(string, "&");
-            this.loggerFactory.log(string);
-            EventHandle.callEvent(new TerminalLogEndEvent());
-        }
+        String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&cERROR&f").toString();
+        this.jniLogger.send(string, "&");
+        this.log(string);
+        EventHandle.callEvent(new TerminalLogEndEvent());
     }
 
     private String parameter(String message, String... strings) {
@@ -94,6 +88,20 @@ public class Logger {
             time++;
         }
         return message;
+    }
+    
+    
+    private void log(String message) {
+        try {
+            if (!LoggerFactory.getLogFile().exists())
+                LoggerFactory.getLogFile().createNewFile();
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter(LoggerFactory.getLogFile().getPath(), true));
+            writer.write(message + "\n");
+            writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private class VariableFactory {

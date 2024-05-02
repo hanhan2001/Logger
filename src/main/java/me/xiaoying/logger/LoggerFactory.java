@@ -1,77 +1,61 @@
 package me.xiaoying.logger;
 
+import me.xiaoying.logger.terminal.LPrintStream;
+
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.zip.GZIPOutputStream;
 
 public class LoggerFactory {
-    private static JNILogger jniLogger;
+    private static JNILogger jniLogger = new JNILogger();
     private static File logFile = new File("./logs/latest.log");
-    private static String defaultName;
-    private static String conflictName;
+    private static String defaultName = logFile.getParent() + "/" + new VariableFactory("%date%.log.gz").date("yyyy-MM-dd");
+    private static String conflictName = logFile.getParent() + "/" + new VariableFactory("%date%-%i%.log.gz").date("yyyy-MM-dd");
 
-    public LoggerFactory() {
-        defaultName = logFile.getParent() + "/" + new VariableFactory("%date%.log.gz").date("yyyy-MM-dd");
-        conflictName = logFile.getParent() + "/" + new VariableFactory("%date%-%i%.log.gz").date("yyyy-MM-dd");
+    static {
+        System.setOut(new LPrintStream(System.out));
 
-        jniLogger = new JNILogger();
-
-        if (logFile.exists())
-            this.save();
+        if (logFile.exists()) save();
     }
 
-    public void setLogFile(String file) {
+    public static void setLogFile(String file) {
         logFile = new File(file);
     }
 
-    public void setLogFile(File file) {
+    public static void setLogFile(File file) {
         logFile = file;
     }
 
-    public String getDefaultName() {
+    public static File getLogFile() {
+        return logFile;
+    }
+
+    public static String getDefaultName() {
         return defaultName;
     }
 
-    public void setDefaultName(String name) {
+    public static void setDefaultName(String name) {
         defaultName = name;
     }
 
-    public String getConflictName() {
+    public static String getConflictName() {
         return conflictName;
     }
 
-    public void setConflictName(String name) {
+    public static void setConflictName(String name) {
         conflictName = name;
     }
 
-    public Logger getLogger() {
-        return new Logger(this);
+    public static Logger getLogger() {
+        return new Logger();
     }
 
-    public Logger getLogger(Class<?> clazz) {
-        return new Logger(clazz, this);
+    public static Logger getLogger(Class<?> clazz) {
+        return new Logger(clazz);
     }
 
-    public void log(String message) {
-        message = ChatColor.stripColor(message);
-
-        if (!logFile.getParentFile().exists())
-            logFile.getParentFile().mkdirs();
-
-        try {
-            if (!logFile.exists())
-                logFile.createNewFile();
-
-            BufferedWriter writer = new BufferedWriter(new FileWriter(logFile.getPath(), true));
-            writer.write(message + "\n");
-            writer.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void save() {
+    public static void save() {
         try {
             File file = new File(new VariableFactory(defaultName).date("yyyy-MM-dd").toString());
             for (int i = 1; file.exists(); i++)
@@ -94,7 +78,7 @@ public class LoggerFactory {
         }
     }
 
-    public JNILogger getJniLogger() {
+    public static JNILogger getJniLogger() {
         return jniLogger;
     }
 
