@@ -87,10 +87,10 @@ public class Test {
         logger.info(ColorUtil.translate("|1Dark_blue"));
     }
     
-	public class ColorUtil {
+    public class ColorUtil {
     	public static String translate(String text) {
             return ChatColor.translateAlternateColorCodes('|', text);
         }
-	}
+    }
 }
 ```
