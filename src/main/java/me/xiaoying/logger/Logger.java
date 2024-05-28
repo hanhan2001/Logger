@@ -110,7 +110,7 @@ public class Logger {
         }
     }
 
-    private class VariableFactory {
+    private final class VariableFactory {
         private String string;
 
         public VariableFactory(String string) {
