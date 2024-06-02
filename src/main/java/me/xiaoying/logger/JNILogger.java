@@ -9,7 +9,11 @@ public class JNILogger {
     public native void send(String message, String altCharColor);
 
     public JNILogger() {
-        File file = new File(this.parent, "JNILogger_" + VERSION + ".dll");
+        File file;
+        if (System.getProperty("os.name").startsWith("Windows"))
+            file = new File(this.parent, "JNILogger_" + VERSION + ".dll");
+        else
+            file = new File(this.parent, "JNILogger_" + VERSION + ".dll.a");
         if (!file.exists())
             this.saveResource(file.getName(), file.getParent());
 
