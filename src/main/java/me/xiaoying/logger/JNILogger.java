@@ -13,7 +13,7 @@ public class JNILogger {
         if (System.getProperty("os.name").startsWith("Windows"))
             file = new File(this.parent, "JNILogger_" + VERSION + ".dll");
         else
-            file = new File(this.parent, "JNILogger_" + VERSION + ".dll.a");
+            file = new File(this.parent, "JNILogger_" + VERSION + ".a");
         if (!file.exists())
             this.saveResource(file.getName(), file.getParent());
 
