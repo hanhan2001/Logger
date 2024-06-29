@@ -56,7 +56,7 @@ public class Logger {
         message = this.parameter(message, objects);
 
         String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&aINFO&f").toString();
-        this.jniLogger.send(string, ChatColor.getAltCharColor());
+        this.jniLogger.send(string, "&");
         this.log(string);
         EventHandle.callEvent(new TerminalLogEndEvent());
     }
@@ -66,7 +66,7 @@ public class Logger {
         message = this.parameter(message, objects);
 
         String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&eWARN&f").toString();
-        this.jniLogger.send(string, ChatColor.getAltCharColor());
+        this.jniLogger.send(string, "&");
         this.log(string);
         EventHandle.callEvent(new TerminalLogEndEvent());
     }
@@ -76,7 +76,7 @@ public class Logger {
         message = this.parameter(message, objects);
 
         String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&cERROR&f").toString();
-        this.jniLogger.send(string, ChatColor.getAltCharColor());
+        this.jniLogger.send(string, "&");
         this.log(string);
         EventHandle.callEvent(new TerminalLogEndEvent());
     }
@@ -86,7 +86,7 @@ public class Logger {
         message = this.parameter(message, objects);
 
         String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&bDEBUG&f").toString();
-        this.jniLogger.send(string, ChatColor.getAltCharColor());
+        this.jniLogger.send(string, "&");
         this.log(string);
         EventHandle.callEvent(new TerminalLogEndEvent());
     }
@@ -94,11 +94,10 @@ public class Logger {
     private String parameter(String message, Object... objects) {
         for (Object object : objects) {
             if (!message.contains("{}"))
-                continue;
+                return message;
 
             message = message.replaceFirst("\\{}", object.toString());
         }
-
         return message;
     }
     
