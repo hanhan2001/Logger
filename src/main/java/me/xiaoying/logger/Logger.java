@@ -56,7 +56,7 @@ public class Logger {
         message = this.parameter(message, strings);
 
         String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&aINFO&f").toString();
-        this.jniLogger.send(string, "&");
+        this.jniLogger.send(string, ChatColor.getAltCharColor());
         this.log(string);
         EventHandle.callEvent(new TerminalLogEndEvent());
     }
@@ -66,7 +66,7 @@ public class Logger {
         message = this.parameter(message, strings);
 
         String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&eWARN&f").toString();
-        this.jniLogger.send(string, "&");
+        this.jniLogger.send(string, ChatColor.getAltCharColor());
         this.log(string);
         EventHandle.callEvent(new TerminalLogEndEvent());
     }
@@ -76,7 +76,7 @@ public class Logger {
         message = this.parameter(message, strings);
 
         String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&cERROR&f").toString();
-        this.jniLogger.send(string, "&");
+        this.jniLogger.send(string, ChatColor.getAltCharColor());
         this.log(string);
         EventHandle.callEvent(new TerminalLogEndEvent());
     }
@@ -86,7 +86,7 @@ public class Logger {
         message = this.parameter(message, strings);
 
         String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&bDEBUG&f").toString();
-        this.jniLogger.send(string, "&");
+        this.jniLogger.send(string, ChatColor.getAltCharColor());
         this.log(string);
         EventHandle.callEvent(new TerminalLogEndEvent());
     }

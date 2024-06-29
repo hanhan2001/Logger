@@ -20,6 +20,7 @@ public enum ChatColor {
 
     private char code;
     private int intCode;
+    private static String altCharColor = "&";
 
     ChatColor(char code, int intCode) {
         this.code = code;
@@ -44,12 +45,12 @@ public enum ChatColor {
     }
 
     public static String stripColor(String text) {
-        if (!text.contains("&"))
+        if (!text.contains(altCharColor))
             return text;
 
         StringBuilder stringBuilder = new StringBuilder();
 
-        String[] split = text.split("&");
+        String[] split = text.split(altCharColor);
         for (int i = 0; i < split.length; i++) {
             if (i == 0) {
                 stringBuilder.append(split[i]);
@@ -58,7 +59,7 @@ public enum ChatColor {
 
             if (split[i].length() == 1) {
                 if (!"123456789AaBbCcDdEeFf".contains(split[i]))
-                    stringBuilder.append("&").append(split[i]);
+                    stringBuilder.append(altCharColor).append(split[i]);
                 continue;
             }
 
@@ -67,12 +68,12 @@ public enum ChatColor {
                 continue;
             }
 
-            stringBuilder.append("&").append(split[i]);
+            stringBuilder.append(altCharColor).append(split[i]);
         }
-        StringBuilder builder = new StringBuilder("&");
+        StringBuilder builder = new StringBuilder(altCharColor);
         while (true) {
             if (text.endsWith(builder.toString())) {
-                builder.append("&");
+                builder.append(altCharColor);
                 continue;
             }
             builder.replace(builder.length() - 1, builder.length(), "");
@@ -82,8 +83,16 @@ public enum ChatColor {
         return stringBuilder.toString();
     }
 
+    public static void setAltCharColor(char altCharColor) {
+        ChatColor.altCharColor = String.valueOf(altCharColor); 
+    }
+    
+    public static String getAltCharColor() {
+        return altCharColor;
+    }
+    
     @Override
     public String toString() {
-        return "&" + this.code;
+        return altCharColor + this.code;
     }
 }
