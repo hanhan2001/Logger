@@ -27,7 +27,7 @@
 
 我没有将这个项目上传maven仓库，所以如果想要用这个项目可能会麻烦一点。
 
-1. 克隆仓库 ([Logger]([hanhan2001/Logger: Java terminal logger (github.com)](https://github.com/hanhan2001/Logger)))
+1. 克隆仓库 [Logger]([hanhan2001/Logger: Java terminal logger (github.com)](https://github.com/hanhan2001/Logger))
 
 2. 构建项目
 
