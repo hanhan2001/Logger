@@ -41,7 +41,7 @@
    mvn install:install-file -DgroupId=me.xiaoying -DartifactId=Logger -Dversion=0.0.1 -Dpackaging=jar -Dfile=Logger.jar
    ```
    
-   事实上可以直接使用 idea 提供的maven命令，可以省略掉步骤 2
+   事实上可以直接使用 idea 提供的maven命令省略掉步骤 2
    
 4. 在 `pom.xml` 引入Logger
 
