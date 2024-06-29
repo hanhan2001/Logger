@@ -81,7 +81,7 @@ logger.info("Name - {}, Version - {}", project, version);
 
 ### 设置日志格式
 
-> 你可以手动设置日志格式，这可能会导致日志其中一个原则: 准确性。
+> 你可以手动设置日志格式，这可能会影响日志其中一个原则: 准确性。
 >
 > 你可以监听 FormatChangeEvent 阻止别人修改日志
 
