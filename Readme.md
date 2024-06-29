@@ -163,7 +163,7 @@ public class Test {
 
 #### 未压缩文件
 
-```json
+```java
 import me.xiaoying.logger.LoggerFactory;
 
 LoggerFactory.setLogFile("File");
@@ -242,7 +242,7 @@ class MyEvent extends Event {
 ```java
 import me.xiaoying.logger.EventHandle;
 
-EventHandle.callEvent(new MyEVent());
+EventHandle.callEvent(new MyEvent());
 ```
 
 
