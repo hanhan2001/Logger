@@ -143,7 +143,7 @@ import me.xiaoying.logger.ChatColor;
 
 public class Test {
     public static void main(String[] args) {
-		Logger logger = LoggerFactory.getLogger();
+        Logger logger = LoggerFactory.getLogger();
         logger.info(ColorUtil.translate("|bHello World"));
     }
     
