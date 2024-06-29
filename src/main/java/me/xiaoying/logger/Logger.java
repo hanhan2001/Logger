@@ -81,6 +81,16 @@ public class Logger {
         EventHandle.callEvent(new TerminalLogEndEvent());
     }
 
+    public void debug(String message, String... strings) {
+        EventHandle.callEvent(new TerminalWantLogEvent());
+        message = this.parameter(message, strings);
+
+        String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&bDEBUG&f").toString();
+        this.jniLogger.send(string, "&");
+        this.log(string);
+        EventHandle.callEvent(new TerminalLogEndEvent());
+    }
+
     private String parameter(String message, String... strings) {
         for (String string : strings) {
             if (!message.contains("{}"))
