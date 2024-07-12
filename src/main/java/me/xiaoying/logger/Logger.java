@@ -92,7 +92,7 @@ public class Logger {
         EventHandle.callEvent(new TerminalLogEndEvent());
     }
 
-    private void needSave(boolean bool) {
+    public void needSave(boolean bool) {
         this.save = bool;
     }
 
