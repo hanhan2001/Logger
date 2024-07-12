@@ -15,6 +15,7 @@ public class Logger {
     private String format;
     private JNILogger jniLogger;
     private String dateFormat = "yyyy/MM/dd-HH:mm:ss";
+    private boolean save = true;
 
     public Logger() {
         this.format = "[%date%] [%level%] - %message%";
@@ -91,6 +92,10 @@ public class Logger {
         EventHandle.callEvent(new TerminalLogEndEvent());
     }
 
+    private void needSave(boolean bool) {
+        this.save = bool;
+    }
+
     private String parameter(String message, Object... objects) {
         for (Object object : objects) {
             if (!message.contains("{}"))
@@ -102,6 +107,8 @@ public class Logger {
     }
     
     private void log(String message) {
+        if (!this.save)
+            return;
         message = ChatColor.stripColor(message);
 
         if (!LoggerFactory.getLogFile().getParentFile().exists())
