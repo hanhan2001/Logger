@@ -13,6 +13,7 @@ public class LoggerFactory {
     private static File logFile = new File("./logs/latest.log");
     private static String defaultName = logFile.getParent() + "/" + new VariableFactory("%date%.log.gz").date("yyyy-MM-dd");
     private static String conflictName = logFile.getParent() + "/" + new VariableFactory("%date%-%i%.log.gz").date("yyyy-MM-dd");
+    private static boolean needSave = false;
 
     static {
         System.setOut(new LOutPrintStream(System.out));
@@ -76,8 +77,16 @@ public class LoggerFactory {
 
             logFile.delete();
         } catch (Exception e) {
-            e.printStackTrace();
+
         }
+    }
+
+    public void setNeedSave(boolean bool) {
+        needSave = bool;
+    }
+
+    public static boolean needSave() {
+        return needSave;
     }
 
     public static JNILogger getJniLogger() {
