@@ -92,6 +92,9 @@ public class Logger {
     }
 
     private String parameter(String message, Object... objects) {
+        if (!message.contains("{}"))
+            return message;
+
         for (Object object : objects) {
             if (!message.contains("{}"))
                 return message;
