@@ -81,17 +81,30 @@ public class Logger {
         EventHandle.callEvent(new TerminalLogEndEvent());
     }
 
+    public void debug(String message, Object... objects) {
+        EventHandle.callEvent(new TerminalWantLogEvent());
+        message = this.parameter(message, objects);
+
+        String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&bDEBUG&f").toString();
+        this.jniLogger.send(string, "&");
+        this.log(string);
+        EventHandle.callEvent(new TerminalLogEndEvent());
+    }
+
     private String parameter(String message, Object... objects) {
-        if (!message.contains("{}"))
-            return message;
+        for (Object object : objects) {
+            if (!message.contains("{}"))
+                return message;
 
-        for (Object object : objects)
-            message.replaceFirst("\\{}", object.toString());
-
+            message = message.replaceFirst("\\{}", object.toString());
+        }
         return message;
     }
     
     private void log(String message) {
+        if (LoggerFactory.needSave())
+            return;
+
         message = ChatColor.stripColor(message);
 
         if (!LoggerFactory.getLogFile().getParentFile().exists())
@@ -110,7 +123,7 @@ public class Logger {
         }
     }
 
-    private final class VariableFactory {
+    private static final class VariableFactory {
         private String string;
 
         public VariableFactory(String string) {
