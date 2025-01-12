@@ -51,9 +51,9 @@ public class Logger {
         return this.dateFormat;
     }
 
-    public void info(String message, String... strings) {
+    public void info(String message, Object... objects) {
         EventHandle.callEvent(new TerminalWantLogEvent());
-        message = this.parameter(message, strings);
+        message = this.parameter(message, objects);
 
         String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&aINFO&f").toString();
         this.jniLogger.send(string, "&");
@@ -61,9 +61,9 @@ public class Logger {
         EventHandle.callEvent(new TerminalLogEndEvent());
     }
 
-    public void warn(String message, String... strings) {
+    public void warn(String message, Object... objects) {
         EventHandle.callEvent(new TerminalWantLogEvent());
-        message = this.parameter(message, strings);
+        message = this.parameter(message, objects);
 
         String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&eWARN&f").toString();
         this.jniLogger.send(string, "&");
@@ -71,9 +71,9 @@ public class Logger {
         EventHandle.callEvent(new TerminalLogEndEvent());
     }
 
-    public void error(String message, String... strings) {
+    public void error(String message, Object... objects) {
         EventHandle.callEvent(new TerminalWantLogEvent());
-        message = this.parameter(message, strings);
+        message = this.parameter(message, objects);
 
         String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&cERROR&f").toString();
         this.jniLogger.send(string, "&");
@@ -81,13 +81,13 @@ public class Logger {
         EventHandle.callEvent(new TerminalLogEndEvent());
     }
 
-    private String parameter(String message, String... strings) {
-        for (String string : strings) {
-            if (!message.contains("{}"))
-                return message;
+    private String parameter(String message, Object... objects) {
+        if (!message.contains("{}"))
+            return message;
 
-            message = message.replaceFirst("\\{}", string);
-        }
+        for (Object object : objects)
+            message.replaceFirst("\\{}", object.toString());
+
         return message;
     }
     
