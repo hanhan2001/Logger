@@ -147,7 +147,10 @@ public class LoggerFactory {
                 LoggerFactory.getLogFile().createNewFile();
 
             BufferedWriter writer = new BufferedWriter(new FileWriter(LoggerFactory.getLogFile().getPath(), true));
-            writer.write(message + "\n");
+            if (!message.endsWith("\n"))
+                writer.write(message + "\n");
+            else
+                writer.write(message);
             writer.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
