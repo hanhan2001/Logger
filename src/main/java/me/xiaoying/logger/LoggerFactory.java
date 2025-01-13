@@ -5,7 +5,10 @@ import me.xiaoying.logger.printstream.LOutPrintStream;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
 public class LoggerFactory {
@@ -15,11 +18,33 @@ public class LoggerFactory {
     private static String conflictName = logFile.getParent() + "/" + new VariableFactory("%date%-%i%.log.gz").date("yyyy-MM-dd");
     private static boolean needSave = false;
 
+    private static boolean logging = false;
+    private static List<Message> messageQueue = new ArrayList<>();
+
     static {
         System.setOut(new LOutPrintStream(System.out));
         System.setErr(new LErrorPrintStream(System.out));
 
-        if (logFile.exists()) save();
+        if (LoggerFactory.logFile.exists()) save();
+
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
+                Iterator<Message> iterator = LoggerFactory.messageQueue.iterator();
+
+                Message message;
+
+                while (iterator.hasNext() && (message = iterator.next()) != null) {
+                    message.getJniLogger().send(message.getMessage(), message.getAltCharColor());
+                    iterator.remove();
+                }
+            }
+        }).start();
     }
 
     public static void setLogFile(String file) {
@@ -90,7 +115,11 @@ public class LoggerFactory {
     }
 
     public static JNILogger getJniLogger() {
-        return jniLogger;
+        return LoggerFactory.jniLogger;
+    }
+
+    public static void addMessage(String message, String altCharColor, JNILogger logger) {
+        LoggerFactory.messageQueue.add(new Message(message, altCharColor, logger));
     }
 
     private static class VariableFactory {
@@ -113,6 +142,30 @@ public class LoggerFactory {
         @Override
         public String toString() {
             return this.string;
+        }
+    }
+
+    private static class Message {
+        private final String message;
+        private final String altCharColor;
+        private final JNILogger jniLogger;
+
+        public Message(String message, String altCharColor, JNILogger jniLogger) {
+            this.message = message;
+            this.altCharColor = altCharColor;
+            this.jniLogger = jniLogger;
+        }
+
+        public String getMessage() {
+            return this.message;
+        }
+
+        public String getAltCharColor() {
+            return this.altCharColor;
+        }
+
+        public JNILogger getJniLogger() {
+            return this.jniLogger;
         }
     }
 }
