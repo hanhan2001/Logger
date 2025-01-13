@@ -5,10 +5,8 @@ import me.xiaoying.logger.printstream.LOutPrintStream;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPOutputStream;
 
 public class LoggerFactory {
@@ -19,7 +17,7 @@ public class LoggerFactory {
     private static boolean needSave = false;
 
     private static boolean logging = false;
-    private static List<Message> messageQueue = new ArrayList<>();
+    private static Stack<Message> messageQueue = new Stack<>();
 
     static {
         System.setOut(new LOutPrintStream(System.out));
@@ -30,18 +28,22 @@ public class LoggerFactory {
         new Thread(() -> {
             while (true) {
                 try {
-                    Thread.sleep(50);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+                    try {
+                        TimeUnit.MICROSECONDS.sleep(50);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
 
-                Iterator<Message> iterator = LoggerFactory.messageQueue.iterator();
+                    Iterator<Message> iterator = LoggerFactory.messageQueue.iterator();
 
-                Message message;
+                    Message message;
 
-                while (iterator.hasNext() && (message = iterator.next()) != null) {
-                    message.getJniLogger().send(message.getMessage(), message.getAltCharColor());
-                    iterator.remove();
+                    while (iterator.hasNext() && (message = iterator.next()) != null) {
+                        message.getJniLogger().send(message.getMessage(), message.getAltCharColor());
+                        iterator.remove();
+                    }
+                } catch (Exception e) {
+                    // ╮（╯＿╰）╭
                 }
             }
         }).start();
@@ -119,7 +121,11 @@ public class LoggerFactory {
     }
 
     public static void addMessage(String message, String altCharColor, JNILogger logger) {
-        LoggerFactory.messageQueue.add(new Message(message, altCharColor, logger));
+        try {
+            LoggerFactory.messageQueue.add(new Message(message, altCharColor, logger));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private static class VariableFactory {
