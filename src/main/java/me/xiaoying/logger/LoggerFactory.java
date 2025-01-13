@@ -1,5 +1,8 @@
 package me.xiaoying.logger;
 
+import me.xiaoying.logger.event.EventHandle;
+import me.xiaoying.logger.event.terminal.TerminalLogEndEvent;
+import me.xiaoying.logger.event.terminal.TerminalWantLogEvent;
 import me.xiaoying.logger.printstream.LErrorPrintStream;
 import me.xiaoying.logger.printstream.LOutPrintStream;
 
@@ -36,7 +39,13 @@ public class LoggerFactory {
 
                 for (int i = 0; i < LoggerFactory.messageQueue.size(); i++) {
                     Message message = LoggerFactory.messageQueue.get(i);
+
+                    if (message.isCallEvent()) EventHandle.callEvent(new TerminalWantLogEvent());
+
                     message.getJniLogger().send(message.getMessage(), message.getAltCharColor(), message.isNewLine());
+                    LoggerFactory.log(message.getMessage());
+
+                    if (message.isCallEvent()) EventHandle.callEvent(new TerminalLogEndEvent());
 
                     LoggerFactory.messageQueue.remove(i--);
                 }
@@ -115,11 +124,33 @@ public class LoggerFactory {
         return LoggerFactory.jniLogger;
     }
 
-    public static void addMessage(String message, String altCharColor, boolean newLine, JNILogger logger) {
+    public static void addMessage(String message, String altCharColor, boolean newLine, boolean callEvent, JNILogger logger) {
         try {
-            LoggerFactory.messageQueue.add(new Message(message, altCharColor, newLine, logger));
+            LoggerFactory.messageQueue.add(new Message(message, altCharColor, newLine, callEvent, logger));
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private static void log(String message) {
+        if (LoggerFactory.needSave())
+            return;
+
+        message = ChatColor.stripColor(message);
+
+        if (!LoggerFactory.getLogFile().getParentFile().exists())
+            LoggerFactory.getLogFile().getParentFile().mkdirs();
+
+        try {
+
+            if (!LoggerFactory.getLogFile().exists())
+                LoggerFactory.getLogFile().createNewFile();
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter(LoggerFactory.getLogFile().getPath(), true));
+            writer.write(message + "\n");
+            writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -150,12 +181,14 @@ public class LoggerFactory {
         private final String message;
         private final String altCharColor;
         private final boolean newLine;
+        private final boolean callEvent;
         private final JNILogger jniLogger;
 
-        public Message(String message, String altCharColor, boolean newLine, JNILogger jniLogger) {
+        public Message(String message, String altCharColor, boolean newLine, boolean callEvent, JNILogger jniLogger) {
             this.message = message;
             this.altCharColor = altCharColor;
             this.newLine = newLine;
+            this.callEvent = callEvent;
             this.jniLogger = jniLogger;
         }
 
@@ -169,6 +202,10 @@ public class LoggerFactory {
 
         public boolean isNewLine() {
             return this.newLine;
+        }
+
+        public boolean isCallEvent() {
+            return this.callEvent;
         }
 
         public JNILogger getJniLogger() {
