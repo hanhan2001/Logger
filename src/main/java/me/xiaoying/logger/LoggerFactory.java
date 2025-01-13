@@ -7,6 +7,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPOutputStream;
 
@@ -17,7 +18,7 @@ public class LoggerFactory {
     private static String conflictName = logFile.getParent() + "/" + new VariableFactory("%date%-%i%.log.gz").date("yyyy-MM-dd");
     private static boolean needSave = false;
 
-    private static Stack<Message> messageQueue = new Stack<>();
+    private static CopyOnWriteArrayList<Message> messageQueue = new CopyOnWriteArrayList<>();
 
     static {
         System.setOut(new LOutPrintStream(System.out));
@@ -28,22 +29,16 @@ public class LoggerFactory {
         new Thread(() -> {
             while (true) {
                 try {
-                    try {
-                        TimeUnit.MICROSECONDS.sleep(50);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
+                    TimeUnit.MICROSECONDS.sleep(50);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
 
-                    Iterator<Message> iterator = LoggerFactory.messageQueue.iterator();
+                for (int i = 0; i < LoggerFactory.messageQueue.size(); i++) {
+                    Message message = LoggerFactory.messageQueue.get(i);
+                    message.getJniLogger().send(message.getMessage(), message.getAltCharColor(), message.isNewLine());
 
-                    Message message;
-
-                    while (iterator.hasNext() && (message = iterator.next()) != null) {
-                        message.getJniLogger().send(message.getMessage(), message.getAltCharColor(), message.isNewLine());
-                        iterator.remove();
-                    }
-                } catch (Exception e) {
-                    // ╮（╯＿╰）╭
+                    LoggerFactory.messageQueue.remove(i--);
                 }
             }
         }).start();
