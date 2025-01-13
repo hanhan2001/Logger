@@ -4,6 +4,7 @@ import me.xiaoying.logger.printstream.LErrorPrintStream;
 import me.xiaoying.logger.printstream.LOutPrintStream;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -16,7 +17,6 @@ public class LoggerFactory {
     private static String conflictName = logFile.getParent() + "/" + new VariableFactory("%date%-%i%.log.gz").date("yyyy-MM-dd");
     private static boolean needSave = false;
 
-    private static boolean logging = false;
     private static Stack<Message> messageQueue = new Stack<>();
 
     static {
@@ -39,7 +39,7 @@ public class LoggerFactory {
                     Message message;
 
                     while (iterator.hasNext() && (message = iterator.next()) != null) {
-                        message.getJniLogger().send(message.getMessage(), message.getAltCharColor());
+                        message.getJniLogger().send(message.getMessage(), message.getAltCharColor(), message.isNewLine());
                         iterator.remove();
                     }
                 } catch (Exception e) {
@@ -91,7 +91,7 @@ public class LoggerFactory {
             for (int i = 1; file.exists(); i++)
                 file = new File(new VariableFactory(conflictName).i(i).date("yyyy-MM-dd").toString());
 
-            GZIPOutputStream gzipOutputStream = new GZIPOutputStream(new FileOutputStream(file));
+            GZIPOutputStream gzipOutputStream = new GZIPOutputStream(Files.newOutputStream(file.toPath()));
             FileInputStream fileInputStream = new FileInputStream(logFile);
             byte[] buf = new byte[1024];
             int len;
@@ -120,9 +120,9 @@ public class LoggerFactory {
         return LoggerFactory.jniLogger;
     }
 
-    public static void addMessage(String message, String altCharColor, JNILogger logger) {
+    public static void addMessage(String message, String altCharColor, boolean newLine, JNILogger logger) {
         try {
-            LoggerFactory.messageQueue.add(new Message(message, altCharColor, logger));
+            LoggerFactory.messageQueue.add(new Message(message, altCharColor, newLine, logger));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -154,11 +154,13 @@ public class LoggerFactory {
     private static class Message {
         private final String message;
         private final String altCharColor;
+        private final boolean newLine;
         private final JNILogger jniLogger;
 
-        public Message(String message, String altCharColor, JNILogger jniLogger) {
+        public Message(String message, String altCharColor, boolean newLine, JNILogger jniLogger) {
             this.message = message;
             this.altCharColor = altCharColor;
+            this.newLine = newLine;
             this.jniLogger = jniLogger;
         }
 
@@ -168,6 +170,10 @@ public class LoggerFactory {
 
         public String getAltCharColor() {
             return this.altCharColor;
+        }
+
+        public boolean isNewLine() {
+            return this.newLine;
         }
 
         public JNILogger getJniLogger() {

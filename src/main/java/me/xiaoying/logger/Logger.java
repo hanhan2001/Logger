@@ -51,13 +51,26 @@ public class Logger {
         return this.dateFormat;
     }
 
+    public void print(String message, Object... objects) {
+        EventHandle.callEvent(new TerminalWantLogEvent());
+        message = this.parameter(message, objects);
+
+        String string = new VariableFactory("%message%").message(message).toString();
+        LoggerFactory.addMessage(string, "&", false, this.jniLogger);
+        this.log(string);
+        EventHandle.callEvent(new TerminalLogEndEvent());
+    }
+
+    public void println(String message, Object... objects) {
+        this.print(message + "\n", objects);
+    }
+
     public void info(String message, Object... objects) {
         EventHandle.callEvent(new TerminalWantLogEvent());
         message = this.parameter(message, objects);
 
         String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&aINFO&f").toString();
-        LoggerFactory.addMessage(string, "&", this.jniLogger);
-//        this.jniLogger.sendMessage(string, "&");
+        LoggerFactory.addMessage(string, "&", true, this.jniLogger);
         this.log(string);
         EventHandle.callEvent(new TerminalLogEndEvent());
     }
@@ -67,8 +80,7 @@ public class Logger {
         message = this.parameter(message, objects);
 
         String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&eWARN&f").toString();
-        LoggerFactory.addMessage(string, "&", this.jniLogger);
-//        this.jniLogger.sendMessage(string, "&");
+        LoggerFactory.addMessage(string, "&", true, this.jniLogger);
         this.log(string);
         EventHandle.callEvent(new TerminalLogEndEvent());
     }
@@ -78,8 +90,7 @@ public class Logger {
         message = this.parameter(message, objects);
 
         String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&cERROR&f").toString();
-        LoggerFactory.addMessage(string, "&", this.jniLogger);
-//        this.jniLogger.sendMessage(string, "&");
+        LoggerFactory.addMessage(string, "&", true, this.jniLogger);
         this.log(string);
         EventHandle.callEvent(new TerminalLogEndEvent());
     }
@@ -89,8 +100,7 @@ public class Logger {
         message = this.parameter(message, objects);
 
         String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&bDEBUG&f").toString();
-        LoggerFactory.addMessage(string, "&", this.jniLogger);
-//        this.jniLogger.sendMessage(string, "&");
+        LoggerFactory.addMessage(string, "&", true, this.jniLogger);
         this.log(string);
         EventHandle.callEvent(new TerminalLogEndEvent());
     }

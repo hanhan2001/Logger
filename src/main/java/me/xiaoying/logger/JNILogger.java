@@ -6,7 +6,7 @@ public class JNILogger {
     private File parent = new File(System.getProperty("user.home") + "/AppData/Roaming/XiaoYing/");
     private int VERSION = 1;
 
-    public native void send(String message, String altCharColor);
+    public native void send(String message, String altCharColor, boolean newLine);
 
     public JNILogger() {
         File file;
