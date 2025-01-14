@@ -1,12 +1,5 @@
 package me.xiaoying.logger;
 
-import me.xiaoying.logger.event.EventHandle;
-import me.xiaoying.logger.event.terminal.TerminalLogEndEvent;
-import me.xiaoying.logger.event.terminal.TerminalWantLogEvent;
-
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
