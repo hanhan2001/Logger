@@ -23,9 +23,12 @@ public class LoggerFactory {
 
     private static CopyOnWriteArrayList<Message> messageQueue = new CopyOnWriteArrayList<>();
 
+    private static final LOutPrintStream out = new LOutPrintStream(System.out);
+    private static final LErrorPrintStream err = new LErrorPrintStream(System.out);
+
     static {
-        System.setOut(new LOutPrintStream(System.out));
-        System.setErr(new LErrorPrintStream(System.out));
+        System.setOut(LoggerFactory.out);
+        System.setErr(LoggerFactory.err);
 
         if (LoggerFactory.logFile.exists()) save();
 
@@ -155,6 +158,14 @@ public class LoggerFactory {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static LOutPrintStream getOut() {
+        return LoggerFactory.out;
+    }
+
+    public static LErrorPrintStream getErr() {
+        return LoggerFactory.err;
     }
 
     private static class VariableFactory {

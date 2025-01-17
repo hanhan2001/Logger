@@ -5,7 +5,7 @@ import me.xiaoying.logger.Logger;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
-public class LErrorPrintStream extends PrintStream {
+public class LErrorPrintStream extends PrintStream implements LPrintStream {
     Logger logger = new Logger();
 
     public LErrorPrintStream(OutputStream out) {
@@ -61,5 +61,10 @@ public class LErrorPrintStream extends PrintStream {
     @Override
     public void println(Object x) {
         this.println(String.valueOf(x));
+    }
+
+    @Override
+    public Logger getLogger() {
+        return this.logger;
     }
 }
