@@ -10,6 +10,11 @@ plugins {
 group = "me.xiaoying.logger"
 version = "1.0.0"
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
 publishing {
     publications {
         create<MavenPublication>("maven") {
@@ -33,9 +38,4 @@ repositories {
 dependencies {
     implementation("net.java.dev.jna:jna:5.16.0")
     implementation("net.java.dev.jna:jna-platform:5.16.0")
-}
-
-tasks.shadowJar {
-    archiveClassifier.set("")
-    archiveFileName.set("logger-${project.version}.jar")
 }
