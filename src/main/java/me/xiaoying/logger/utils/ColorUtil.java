@@ -8,6 +8,6 @@ public class ColorUtil {
      * @return 是否为 color 字符
      */
     public static boolean isColorKey(char c) {
-        return c > '0' && c < 'f';
+        return "123456789AaBbCcDdEeFf".indexOf(c) != -1;
     }
 }
