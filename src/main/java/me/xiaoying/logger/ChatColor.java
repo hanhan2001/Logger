@@ -135,6 +135,46 @@ public enum ChatColor {
         return new String(chars);
     }
 
+    public static String stripColor(String text) {
+        if (!text.contains("§"))
+            return text;
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        String[] split = text.split("§");
+        for (int i = 0; i < split.length; i++) {
+            if (i == 0) {
+                stringBuilder.append(split[i]);
+                continue;
+            }
+
+            if (split[i].length() == 1) {
+                if (!"123456789AaBbCcDdEeFf".contains(split[i]))
+                    stringBuilder.append("§").append(split[i]);
+                continue;
+            }
+
+            if ("123456789AaBbCcDdEeFf".contains(split[i].substring(0, 1))) {
+                stringBuilder.append(split[i].substring(1, split[i].length()));
+                continue;
+            }
+
+            stringBuilder.append("§").append(split[i]);
+        }
+        StringBuilder builder = new StringBuilder("§");
+        while (true) {
+            if (text.endsWith(builder.toString())) {
+                builder.append("§");
+                continue;
+            }
+            builder.replace(builder.length() - 1, builder.length(), "");
+            break;
+        }
+        stringBuilder.append(builder);
+        return stringBuilder.toString();
+    }
+
+
     @Override
     public String toString() {
         return "§" + this.code;
