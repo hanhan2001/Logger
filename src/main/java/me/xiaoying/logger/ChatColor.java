@@ -18,72 +18,48 @@ public enum ChatColor {
     YELLOW('e', 14),
     WHITE('f', 15);
 
-    private char code;
-    private int intCode;
+    private final char code;
+    private final int intCode;
 
     ChatColor(char code, int intCode) {
         this.code = code;
         this.intCode = intCode;
     }
 
-    public static String translateAlternateColorCodes(char altCharColor, String text) {
-        char[] b = text.toCharArray();
-
-        for (int i = 0; i < b.length - 1; i++) {
-            if (b[i] != altCharColor || "123456789AaBbCcDdEeFf".indexOf(b[i + 1]) == -1)
-                continue;
-
-            b[i] = 38;
-            b[i + 1] = Character.toLowerCase(b[i + 1]);
-        }
-        return new String(b);
-    }
-
-    public char getChar() {
+    public char getCode() {
         return this.code;
     }
 
-    public static String stripColor(String text) {
-        if (!text.contains("&"))
+    public int getIntCode() {
+        return this.intCode;
+    }
+
+    /**
+     * 将关键字替换成颜色代码
+     *
+     * @param altCharColor 希望被替换关键字
+     * @param text 原内容
+     * @return 替换后的内容
+     */
+    public static String translateAlternateColorCodes(char altCharColor, String text) {
+        if (!text.contains(String.valueOf(altCharColor)))
             return text;
 
-        StringBuilder stringBuilder = new StringBuilder();
+        char[] chars = text.toCharArray();
 
-        String[] split = text.split("&");
-        for (int i = 0; i < split.length; i++) {
-            if (i == 0) {
-                stringBuilder.append(split[i]);
+        for (int i = 0; i < chars.length; i++) {
+            if (chars[i] != altCharColor && "123456789AaBbCcDdEeFf".indexOf(chars[i + 1]) == -1)
                 continue;
-            }
 
-            if (split[i].length() == 1) {
-                if (!"123456789AaBbCcDdEeFf".contains(split[i]))
-                    stringBuilder.append("&").append(split[i]);
-                continue;
-            }
-
-            if ("123456789AaBbCcDdEeFf".contains(split[i].substring(0, 1))) {
-                stringBuilder.append(split[i].substring(1, split[i].length()));
-                continue;
-            }
-
-            stringBuilder.append("&").append(split[i]);
+            chars[i] = 167;
+            chars[i + 1] = Character.toLowerCase(chars[i + 1]);
         }
-        StringBuilder builder = new StringBuilder("&");
-        while (true) {
-            if (text.endsWith(builder.toString())) {
-                builder.append("&");
-                continue;
-            }
-            builder.replace(builder.length() - 1, builder.length(), "");
-            break;
-        }
-        stringBuilder.append(builder);
-        return stringBuilder.toString();
+
+        return new String(chars);
     }
 
     @Override
     public String toString() {
-        return "&" + this.code;
+        return "§" + this.code;
     }
 }

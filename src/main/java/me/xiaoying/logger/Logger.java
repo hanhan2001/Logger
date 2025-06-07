@@ -1,134 +1,53 @@
 package me.xiaoying.logger;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
+import com.sun.jna.platform.win32.Kernel32;
+import com.sun.jna.platform.win32.WinNT;
 
 public class Logger {
     private Class<?> clazz;
-    private String format;
-    private JNILogger jniLogger;
-    private String dateFormat = "yyyy/MM/dd-HH:mm:ss";
 
-    public Logger() {
-        this.format = "[%date%] [%level%] - %message%";
-        this.jniLogger = LoggerFactory.getJniLogger();
+    protected Logger() {
+
     }
 
-    public Logger(Class<?> clazz) {
+    protected Logger(Class<?> clazz) {
         this.clazz = clazz;
-        this.format = "[%date%] [%level%] - [%class%]: %message%";
-        this.jniLogger = LoggerFactory.getJniLogger();
     }
 
-    public Logger setFormat(String format) {
-        if (format == null || format.isEmpty())
-            return this;
-
-        this.format = format;
-        return this;
+    public void info(String message) {
+        Kernel32Ex kernel32 = Kernel32Ex.INSTANCE;
+        kernel32.SetConsoleTextAttribute(
+                Kernel32.INSTANCE.GetStdHandle(Kernel32.STD_OUTPUT_HANDLE),
+                0x0C);
+        System.out.println(message);
+        WinNT.HANDLE hConsole = kernel32.GetStdHandle(Kernel32Ex.STD_OUTPUT_HANDLE);
+        kernel32.SetConsoleTextAttribute(hConsole, 0x07);
+        System.out.println("恢复正常颜色");
     }
 
-    public String getFormat() {
-        return this.format;
+    public void info(String format, String... args) {
+
     }
 
-    public Logger setDateFormat(String dateFormat) {
-        if (format == null || format.isEmpty())
-            return this;
+    public void logger(String message) {
 
-        this.dateFormat = dateFormat;
-        return this;
     }
 
-    public String getDateFormat() {
-        return this.dateFormat;
-    }
+    enum Level {
+        INFO('a'),
+        WARN('e'),
+        ERROR('c'),
+        DEBUG('b');
 
-    public void print(String message, Object... objects) {
-        message = this.parameter(message, objects);
+        private final char color;
 
-        String string = new VariableFactory("%message%").message(message).toString();
-        LoggerFactory.addMessage(string, "&", false, false, this.jniLogger);
-    }
-
-    public void println(String message, Object... objects) {
-        this.print(message + "\n", objects);
-    }
-
-    public void info(String message, Object... objects) {
-        message = this.parameter(message, objects);
-
-        String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&aINFO&f").toString();
-        LoggerFactory.addMessage(string, "&", true, true, this.jniLogger);
-    }
-
-    public void warn(String message, Object... objects) {
-        message = this.parameter(message, objects);
-
-        String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&eWARN&f").toString();
-        LoggerFactory.addMessage(string, "&", true, true, this.jniLogger);
-    }
-
-    public void error(String message, Object... objects) {
-        message = this.parameter(message, objects);
-
-        String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&cERROR&f").toString();
-        LoggerFactory.addMessage(string, "&", true, true, this.jniLogger);
-    }
-
-    public void debug(String message, Object... objects) {
-        message = this.parameter(message, objects);
-
-        String string = new VariableFactory(this.format).date(this.dateFormat).message(message).clazz(this.clazz).level("&bDEBUG&f").toString();
-        LoggerFactory.addMessage(string, "&", true, true, this.jniLogger);
-    }
-
-    private String parameter(String message, Object... objects) {
-        if (!message.contains("{}"))
-            return message;
-
-        for (Object object : objects) {
-            if (!message.contains("{}"))
-                return message;
-
-            message = message.replaceFirst("\\{}", object.toString());
-        }
-        return message;
-    }
-
-    private static final class VariableFactory {
-        private String string;
-
-        public VariableFactory(String string) {
-            this.string = string;
+        Level(char color) {
+            this.color = color;
         }
 
-        public VariableFactory clazz(Class<?> clacc) {
-            if (clacc == null)
-                return this;
-
-            this.string = this.string.replace("%class%", clacc.getName());
-            return this;
-        }
-
-        public VariableFactory date(String format) {
-            this.string = this.string.replace("%date%", new SimpleDateFormat(format).format(new Date()));
-            return this;
-        }
-
-        public VariableFactory level(String level) {
-            this.string = this.string.replace("%level%", level);
-            return this;
-        }
-
-        public VariableFactory message(String message) {
-            this.string = this.string.replace("%message%", message);
-            return this;
-        }
-
-        @Override
-        public String toString() {
-            return this.string;
+        public char getColor() {
+            return this.color;
         }
     }
 }
