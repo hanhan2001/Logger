@@ -34,6 +34,83 @@ public enum ChatColor {
         return this.intCode;
     }
 
+    public static char getCodeByInt(int code) {
+        switch (code) {
+            case 0:
+                return '0';
+            case 1:
+                return '1';
+            case 2:
+                return '2';
+            case 3:
+                return '3';
+            case 4:
+                return '4';
+            case 5:
+                return '5';
+            case 6:
+                return '6';
+            case 7:
+                return '7';
+            case 8:
+                return '8';
+            case 9:
+                return '9';
+            case 10:
+                return 'A';
+            case 11:
+                return 'B';
+            case 12:
+                return 'C';
+            case 13:
+                return 'D';
+            case 14:
+                return 'E';
+            case 15:
+                return 'F';
+        }
+
+        return 0;
+    }
+
+    public static short getShortCode(char code) {
+        switch (Character.toLowerCase(code)) {
+            case '0':
+                return 0x0;
+            case '1':
+                return 0x1;
+            case '2':
+                return 0x2;
+            case '3':
+                return 0x3;
+            case '4':
+                return 0x4;
+            case '5':
+                return 0x5;
+            case '6':
+                return 0x6;
+            case '7':
+                return 0x7;
+            case '8':
+                return 0x8;
+            case '9':
+                return 0x9;
+            case 'a':
+                return 0xA;
+            case 'b':
+                return 0xB;
+            case 'c':
+                return 0xC;
+            case 'd':
+                return 0xD;
+            case 'e':
+                return 0xE;
+            case 'f':
+                return 0xF;
+        }
+        return 0x0;
+    }
+
     /**
      * 将关键字替换成颜色代码
      *
@@ -48,7 +125,7 @@ public enum ChatColor {
         char[] chars = text.toCharArray();
 
         for (int i = 0; i < chars.length; i++) {
-            if (chars[i] != altCharColor && "123456789AaBbCcDdEeFf".indexOf(chars[i + 1]) == -1)
+            if (chars[i] != altCharColor || "123456789AaBbCcDdEeFf".indexOf(chars[i + 1]) == -1)
                 continue;
 
             chars[i] = 167;

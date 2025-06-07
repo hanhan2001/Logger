@@ -1,23 +1,12 @@
 package me.xiaoying.logger;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class LoggerFactory {
     private static final Map<Class<?>, Logger> loggers = new HashMap<>();
 
-    private static String dateFormat = "yyyy/MM/dd-HH:mm:ss";
-    private static String loggerFormat = null;
-    private static Map<Logger.Level, String> loggerFormats = new HashMap<>();
-
-    static {
-        LoggerFactory.loggerFormats.put(Logger.Level.INFO, "");
-        LoggerFactory.loggerFormats.put(Logger.Level.WARN, "");
-        LoggerFactory.loggerFormats.put(Logger.Level.ERROR, "");
-        LoggerFactory.loggerFormats.put(Logger.Level.DEBUG, "");
-    }
+    private static boolean nextLine = false;
 
     /**
      * 获取 Logger
@@ -37,36 +26,20 @@ public class LoggerFactory {
     }
 
     /**
-     * 获取统一的日志格式<br>
-     * 如果未设置统一的日志格式则返回 null
+     * 设置是否需要换行
      *
-     * @return 日志格式
+     * @param nextLine 是否需要换行
      */
-    public static String getFormat() {
-        return LoggerFactory.loggerFormat;
+    protected static void setNextLine(boolean nextLine) {
+        LoggerFactory.nextLine = nextLine;
     }
 
     /**
-     * 获取不同 Level 的日志格式
+     * 判断是否需要换行
      *
-     * @param level Logger Level
-     * @return 对应 Level 的日志格式
+     * @return 是否需要换行
      */
-    public static String getFormat(Logger.Level level) {
-        return LoggerFactory.loggerFormats.get(level);
-    }
-
-    /**
-     * 获取 %date% 变量的格式
-     *
-     * @return Date变量格式
-     */
-    public static String getDateFormat() {
-        return LoggerFactory.dateFormat;
-    }
-
-    public static void unset() {
-        LoggerFactory.loggerFormat = null;
-        LoggerFactory.dateFormat = "yyyy/MM/dd-HH:mm:ss";
+    protected static boolean nextLine() {
+        return LoggerFactory.nextLine;
     }
 }
