@@ -2,6 +2,9 @@ package me.xiaoying.logger;
 
 import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.ptr.IntByReference;
+import me.xiaoying.logger.event.EventHandle;
+import me.xiaoying.logger.event.log.LogEndEvent;
+import me.xiaoying.logger.event.log.PrepareLogEvent;
 import me.xiaoying.logger.utils.ColorUtil;
 
 import java.util.HashMap;
@@ -64,6 +67,17 @@ public class Logger {
         if (LoggerFactory.nextLine())
             message = "\n" + message;
 
+        // 触发 PrepareLogEvent
+        PrepareLogEvent event = new PrepareLogEvent(message);
+        EventHandle.callEvent(event);
+
+        // 当此事件被 cancel 时则不会打印消息内容
+        if (event.isCanceled())
+            return;
+
+        // 同步事件中设置的 message 内容
+        message = event.getMessage();
+
         Kernel32Ex kernel32 = Kernel32Ex.INSTANCE;
 
         WinNT.HANDLE hConsole = kernel32.GetStdHandle(Kernel32Ex.STD_OUTPUT_HANDLE);
@@ -95,7 +109,6 @@ public class Logger {
                     kernel32.SetConsoleTextAttribute(kernel32.GetStdHandle(Kernel32Ex.STD_OUTPUT_HANDLE), code & 0x0F | originBackColor);
                     kernel32.WriteConsoleW(hConsole, charArray, charArray.length, new IntByReference(0), null);
 
-
                     code = chars[i + 1] == 'r' ? originForeColor : ChatColor.getShortCode(chars[i + 1]);
 
                     i += 1;
@@ -116,6 +129,9 @@ public class Logger {
             LoggerFactory.setNextLine(true);
             kernel32.SetConsoleTextAttribute(hConsole, originColor);
         }
+
+        // 触发 LogEndEvent 事件
+        EventHandle.callEvent(new LogEndEvent(message));
     }
 
     /**
