@@ -1,11 +1,29 @@
 plugins {
     id("java")
-    // shadow
+
+    `maven-publish`
+    `java-library`
+
     id("com.github.johnrengelman.shadow").version("8.1.1")
 }
 
 group = "me.xiaoying.logger"
 version = "1.0.0"
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+            groupId = "me.xiaoying"
+            artifactId = "logger"
+            version = project.version.toString()
+        }
+    }
+
+    repositories {
+        mavenLocal()
+    }
+}
 
 repositories {
     mavenLocal()
@@ -17,12 +35,7 @@ dependencies {
     implementation("net.java.dev.jna:jna-platform:5.16.0")
 }
 
-tasks.build {
-    dependsOn(tasks.shadowJar)
-}
-
 tasks.shadowJar {
-    manifest {
-        attributes("Main-Class" to "me.xiaoying.logger.Test")
-    }
+    archiveClassifier.set("")
+    archiveFileName.set("logger-${project.version}.jar")
 }
