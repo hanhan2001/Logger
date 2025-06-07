@@ -1,5 +1,7 @@
 package me.xiaoying.logger;
 
+import me.xiaoying.logger.printsrteam.LPrintStream;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,6 +9,20 @@ public class LoggerFactory {
     private static final Map<Class<?>, Logger> loggers = new HashMap<>();
 
     private static boolean nextLine = false;
+
+    static {
+        System.setOut(new LPrintStream(System.out));
+        System.setErr(new LPrintStream(System.err));
+    }
+
+    /**
+     * 获取无 class 的 Logger
+     *
+     * @return Logger
+     */
+    public static Logger getLogger() {
+        return new Logger();
+    }
 
     /**
      * 获取 Logger

@@ -36,7 +36,31 @@ public class Logger {
         this.logger(new VariableFactory(this.format(Level.INFO, message)).clazz(this.clazz).date(this.dateFormat).level(Level.INFO).parameters(args).color().toString());
     }
 
-    public void logger(String message) {
+    public void warn(String message) {
+        this.info(message, new Object[0]);
+    }
+
+    public void warn(String message, Object... args) {
+        this.logger(new VariableFactory(this.format(Level.WARN, message)).clazz(this.clazz).date(this.dateFormat).level(Level.WARN).parameters(args).color().toString());
+    }
+
+    public void error(String message) {
+        this.error(message, new Object[0]);
+    }
+
+    public void error(String message, Object... args) {
+        this.logger(new VariableFactory(this.format(Level.ERROR, message)).clazz(this.clazz).date(this.dateFormat).level(Level.ERROR).parameters(args).color().toString());
+    }
+
+    public void debug(String message) {
+        this.error(message, new Object[0]);
+    }
+
+    public void debug(String message, Object... args) {
+        this.logger(new VariableFactory(this.format(Level.DEBUG, message)).clazz(this.clazz).date(this.dateFormat).level(Level.DEBUG).parameters(args).color().toString());
+    }
+
+    private void logger(String message) {
         if (LoggerFactory.nextLine())
             message = "\n" + message;
 
@@ -172,7 +196,7 @@ public class Logger {
         return message;
     }
 
-    enum Level {
+    public enum Level {
         INFO('a'),
         WARN('e'),
         ERROR('c'),
