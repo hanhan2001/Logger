@@ -1,4 +1,4 @@
-package me.xiaoying.logger;
+package me.xiaoying.logger.render;
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;
