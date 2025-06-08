@@ -1,19 +1,11 @@
 package me.xiaoying.logger.render;
 
-import com.sun.jna.Native;
-import com.sun.jna.platform.unix.LibC;
-import com.sun.jna.platform.unix.LibCAPI;
-import com.sun.jna.ptr.IntByReference;
 import me.xiaoying.logger.LoggerFactory;
 import me.xiaoying.logger.utils.ColorUtil;
 
 import java.nio.charset.StandardCharsets;
 
 public class LinuxRender implements Render {
-    public LinuxRender() {
-//        Native.register("c");
-    }
-
     @Override
     public void render(String string) {
         char[] chars = string.toCharArray();
