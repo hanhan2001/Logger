@@ -17,8 +17,8 @@ public class LoggerFactory {
     private static Render render;
 
     static {
-//        System.setOut(new LPrintStream(System.out));
-//        System.setErr(new LPrintStream(System.err));
+        System.setOut(new LPrintStream(System.out));
+        System.setErr(new LPrintStream(System.err));
 
         if (System.getProperty("os.name").toUpperCase(Locale.ENGLISH).startsWith("WINDOWS"))
             LoggerFactory.render = new WinRender();
