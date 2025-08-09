@@ -43,7 +43,7 @@ class VariableFactory {
             if (index > args.length - 1)
                 break;
 
-            this.string = this.string.replaceFirst("\\{}", String.valueOf(args[index]));
+            this.string = this.string.replaceFirst("\\{}", String.valueOf(args[index++]));
         }
 
         return this;
