@@ -2,6 +2,7 @@ package me.xiaoying.logger.printsrteam;
 
 import me.xiaoying.logger.Logger;
 import me.xiaoying.logger.LoggerFactory;
+import me.xiaoying.logger.utils.ColorUtil;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -139,9 +140,20 @@ public class LPrintStream extends PrintStream {
                 case INFO:
                     logger.info(string);
                     break;
-                case ERROR:
-                    logger.error(string);
+                case ERROR: {
+                    if (!this.isStackTraceLine(string)) {
+                        logger.error(string);
+                        break;
+                    }
+
+                    String origin = logger.getFormat();
+
+                    logger.setFormat(ColorUtil.translate("&c%message%"));
+                    logger.warn(string);
+
+                    logger.setFormat(origin);
                     break;
+                }
                 case DEBUG:
                     logger.debug(string);
                     break;
@@ -149,5 +161,15 @@ public class LPrintStream extends PrintStream {
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private boolean isStackTraceLine(String line) {
+        return line.startsWith("\tat ") ||
+                line.startsWith("Caused by: ") ||
+                line.startsWith("Suppressed: ") ||
+                line.matches("^[\\w.]*Exception.*") ||
+                line.startsWith("Exception in thread ") ||
+                line.trim().startsWith("...") ||
+                line.trim().matches("\\.\\.\\. \\d+ more");
     }
 }
