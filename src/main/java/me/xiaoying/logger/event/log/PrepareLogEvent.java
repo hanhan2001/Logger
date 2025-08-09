@@ -1,5 +1,6 @@
 package me.xiaoying.logger.event.log;
 
+import me.xiaoying.logger.Logger;
 import me.xiaoying.logger.event.Cancelable;
 
 /**
@@ -8,12 +9,24 @@ import me.xiaoying.logger.event.Cancelable;
 public class PrepareLogEvent extends LogEvent implements Cancelable {
     private boolean cancelled = false;
 
+    private final Logger logger;
+
     private String message;
 
-    public PrepareLogEvent(String message) {
+    public PrepareLogEvent(Logger logger, String message) {
         super(message);
 
+        this.logger = logger;
         this.message = message;
+    }
+
+    /**
+     * 获取来源 Logger
+     *
+     * @return Logger
+     */
+    public Logger getLogger() {
+        return this.logger;
     }
 
     /**

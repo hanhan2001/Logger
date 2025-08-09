@@ -33,7 +33,10 @@ public class Logger {
     }
 
     public void info(Object message, Object... args) {
-        this.logger(new VariableFactory(this.format(Level.INFO, String.valueOf(message))).clazz(this.clazz).date(this.dateFormat).level(Level.INFO).parameters(args).color().toString());
+        if (message == null)
+            return;
+
+        this.logger(new VariableFactory(message.toString()).parameters(args).color().toString(), Level.INFO);
     }
 
     public void warn(Object message) {
@@ -41,7 +44,10 @@ public class Logger {
     }
 
     public void warn(Object message, Object... args) {
-        this.logger(new VariableFactory(this.format(Level.WARN, String.valueOf(message))).clazz(this.clazz).date(this.dateFormat).level(Level.WARN).parameters(args).color().toString());
+        if (message == null)
+            return;
+
+        this.logger(new VariableFactory(message.toString()).parameters(args).color().toString(), Level.WARN);
     }
 
     public void error(Object message) {
@@ -49,7 +55,10 @@ public class Logger {
     }
 
     public void error(Object message, Object... args) {
-        this.logger(new VariableFactory(this.format(Level.ERROR, String.valueOf(message))).clazz(this.clazz).date(this.dateFormat).level(Level.ERROR).parameters(args).color().toString());
+        if (message == null)
+            return;
+
+        this.logger(new VariableFactory(message.toString()).parameters(args).color().toString(), Level.ERROR);
     }
 
     public void debug(Object message) {
@@ -57,15 +66,43 @@ public class Logger {
     }
 
     public void debug(Object message, Object... args) {
-        this.logger(new VariableFactory(this.format(Level.DEBUG, String.valueOf(message))).clazz(this.clazz).date(this.dateFormat).level(Level.DEBUG).parameters(args).color().toString());
+        if (message == null)
+            return;
+
+        this.logger(new VariableFactory(message.toString()).parameters(args).color().toString(), Level.DEBUG);
     }
 
-    private void logger(String message) {
+    /**
+     * 类似直接打印的效果，打印出来的内容不会被 EventHandler 捕捉到
+     *
+     * @param message 内容
+     */
+    public void print(String message) {
         if (LoggerFactory.nextLine())
             message = "\n" + message;
 
+        String originFormat = this.format;
+
+        this.setFormat("%message%");
+        LoggerFactory.getRender().render(message);
+
+        this.setFormat(originFormat);
+    }
+
+    /**
+     * 类似直接打印的效果，打印出来的内容不会被 EventHandler 捕捉到
+     *
+     * @param message 内容
+     */
+    public void println(String message) {
+        this.print(message + "\n");
+    }
+
+    private void logger(String message, Level level) {
+        String origin = message;
+
         // 触发 PrepareLogEvent
-        PrepareLogEvent event = new PrepareLogEvent(message);
+        PrepareLogEvent event = new PrepareLogEvent(this, origin);
         EventHandle.callEvent(event);
 
         // 当此事件被 cancel 时则不会打印消息内容
@@ -74,11 +111,17 @@ public class Logger {
 
         // 同步事件中设置的 message 内容
         message = event.getMessage();
+        message = new VariableFactory(this.format(level, String.valueOf(message))).clazz(this.clazz).date(this.dateFormat).level(level).color().toString();
+
+        origin = message;
+
+        if (LoggerFactory.nextLine())
+            message = "\n" + message;
 
         LoggerFactory.getRender().render(message);
 
         // 触发 LogEndEvent 事件
-        EventHandle.callEvent(new LogEndEvent(message));
+        EventHandle.callEvent(new LogEndEvent(origin));
     }
 
     /**
