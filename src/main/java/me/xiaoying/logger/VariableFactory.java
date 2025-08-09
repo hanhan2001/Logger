@@ -34,13 +34,13 @@ class VariableFactory {
     }
 
     public VariableFactory parameters(Object... args) {
-        if (this.string.contains("{}"))
+        if (!this.string.contains("{}"))
             return this;
 
         int index = 0;
 
         while (this.string.contains("{}")) {
-            if (index >= args.length - 1)
+            if (index > args.length - 1)
                 break;
 
             this.string = this.string.replaceFirst("\\{}", String.valueOf(args[index]));
