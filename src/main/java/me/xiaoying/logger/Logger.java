@@ -78,9 +78,6 @@ public class Logger {
      * @param message 内容
      */
     public void print(String message) {
-        if (LoggerFactory.nextLine())
-            message = "\n" + message;
-
         String originFormat = this.format;
 
         this.setFormat("%message%");
@@ -115,8 +112,7 @@ public class Logger {
 
         origin = message;
 
-        if (LoggerFactory.nextLine())
-            message = "\n" + message;
+        message = message + "\n";
 
         LoggerFactory.getRender().render(message);
 

@@ -2,7 +2,6 @@ package me.xiaoying.logger.render;
 
 import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.ptr.IntByReference;
-import me.xiaoying.logger.LoggerFactory;
 import me.xiaoying.logger.utils.ColorUtil;
 
 public class WinRender implements Render {
@@ -56,7 +55,6 @@ public class WinRender implements Render {
             }
 
         } finally {
-            LoggerFactory.setNextLine(true);
             kernel32.SetConsoleTextAttribute(hConsole, originColor);
         }
     }

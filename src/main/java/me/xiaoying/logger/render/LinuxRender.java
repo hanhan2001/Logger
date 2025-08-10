@@ -1,6 +1,5 @@
 package me.xiaoying.logger.render;
 
-import me.xiaoying.logger.LoggerFactory;
 import me.xiaoying.logger.utils.ColorUtil;
 
 import java.nio.charset.StandardCharsets;
@@ -38,8 +37,6 @@ public class LinuxRender implements Render {
             byte[] bytes = (color + stringBuilder).getBytes(StandardCharsets.UTF_8);
             CLibrary.INSTANCE.write(1, bytes, bytes.length);
         }
-
-        LoggerFactory.setNextLine(true);
     }
 
     public String getColor(char code) {
