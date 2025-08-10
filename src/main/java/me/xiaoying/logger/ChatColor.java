@@ -48,7 +48,7 @@ public enum ChatColor {
         char[] chars = text.toCharArray();
 
         for (int i = 0; i < chars.length; i++) {
-            if (chars[i] != altCharColor || "123456789AaBbCcDdEeFf".indexOf(chars[i + 1]) == -1)
+            if (chars[i] != altCharColor || "123456789AaBbCcDdEeFfRr".indexOf(chars[i + 1]) == -1)
                 continue;
 
             chars[i] = 167;
@@ -72,12 +72,12 @@ public enum ChatColor {
             }
 
             if (split[i].length() == 1) {
-                if (!"123456789AaBbCcDdEeFf".contains(split[i]))
+                if (!"123456789AaBbCcDdEeFfRr".contains(split[i]))
                     stringBuilder.append("§").append(split[i]);
                 continue;
             }
 
-            if ("123456789AaBbCcDdEeFf".contains(split[i].substring(0, 1))) {
+            if ("123456789AaBbCcDdEeFfRr".contains(split[i].substring(0, 1))) {
                 stringBuilder.append(split[i].substring(1, split[i].length()));
                 continue;
             }
