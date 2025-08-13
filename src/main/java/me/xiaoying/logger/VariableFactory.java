@@ -11,6 +11,9 @@ class VariableFactory {
     }
 
     public VariableFactory clazz(String clazz) {
+        if (clazz == null || clazz.isEmpty())
+            return this;
+
         this.string = this.string.replace("%class%", clazz);
         return this;
     }
