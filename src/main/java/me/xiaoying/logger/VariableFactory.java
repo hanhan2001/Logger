@@ -10,6 +10,11 @@ class VariableFactory {
         this.string = string;
     }
 
+    public VariableFactory clazz(String clazz) {
+        this.string = this.string.replace("%class%", clazz);
+        return this;
+    }
+
     public VariableFactory clazz(Class<?> clazz) {
         if (clazz == null)
             return this;
