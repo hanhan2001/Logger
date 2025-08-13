@@ -16,14 +16,20 @@ public class Logger {
     // %date% 变量格式
     private String dateFormat = "yyyy/MM/dd-HH:mm:ss";
 
-    private Class<?> clazz = null;
+    private String clazz = null;
 
     protected Logger() {
         this.format = "[%date%] [%level%] - %message%";
     }
 
-    protected Logger(Class<?> clazz) {
+    protected Logger(String clazz) {
         this.clazz = clazz;
+
+        this.format = "[%date%] [%level%] - %message%";
+    }
+
+    protected Logger(Class<?> clazz) {
+        this.clazz = clazz.getName();
 
         this.format = "[%date%] [%level%] [%class%] - %message%";
     }

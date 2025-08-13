@@ -10,7 +10,8 @@ import java.util.Locale;
 import java.util.Map;
 
 public class LoggerFactory {
-    private static final Map<Class<?>, Logger> loggers = new HashMap<>();
+//    private static final Map<Class<?>, Logger> loggers = new HashMap<>();
+    private static final Map<String, Logger> loggers = new HashMap<>();
 
     private static Render render;
 
@@ -36,6 +37,23 @@ public class LoggerFactory {
     /**
      * 获取 Logger
      *
+     * @param clazz 指定来源 class(也可当作 Logger 名称使用)
+     * @return Logger
+     */
+    public static Logger getLogger(String clazz) {
+        Logger logger;
+
+        if ((logger = LoggerFactory.loggers.get(clazz)) == null) {
+            logger = new Logger(clazz);
+            LoggerFactory.loggers.put(clazz, logger);
+        }
+
+        return logger;
+    }
+
+    /**
+     * 获取 Logger
+     *
      * @param clazz 指定来源 Class
      * @return 有 class 对象的 Logger
      */
@@ -44,7 +62,7 @@ public class LoggerFactory {
 
         if ((logger = LoggerFactory.loggers.get(clazz)) == null) {
             logger = new Logger(clazz);
-            LoggerFactory.loggers.put(clazz, logger);
+            LoggerFactory.loggers.put(clazz.toString(), logger);
         }
 
         return logger;
