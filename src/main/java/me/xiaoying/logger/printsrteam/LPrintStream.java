@@ -6,6 +6,8 @@ import me.xiaoying.logger.utils.ColorUtil;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.HashSet;
+import java.util.Set;
 
 public class LPrintStream extends PrintStream {
     private final Logger.Level level;
@@ -110,24 +112,20 @@ public class LPrintStream extends PrintStream {
     public void println(Object x) {
         this.println(String.valueOf(x));
     }
-
-//    @Override
-//    public PrintStream printf(String format, Object... args) {
-//        return this.printf(format, args);
-//    }
-//
-//    @Override
-//    public PrintStream printf(Locale l, String format, Object... args) {
-//        return this.printf(l, format, args);
-//    }
     
     @Override
     public void println(String string) {
+        Set<String> excludePrefixes = new HashSet<>();
+        excludePrefixes.add("java.");
+        excludePrefixes.add("me.xiaoying.logger.");
+
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
 
         String className = null;
         for (StackTraceElement stackTraceElement : stackTraceElements) {
-            if (stackTraceElement.getClassName().startsWith("me.xiaoying.logger."))
+            boolean exclude = excludePrefixes.stream().anyMatch(stackTraceElement.getClassName()::startsWith);
+
+            if (exclude)
                 continue;
 
             className = stackTraceElement.getClassName();
