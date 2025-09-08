@@ -70,7 +70,7 @@ public class LPrintStream extends PrintStream {
 
     @Override
     public void println() {
-        this.println();
+        this.print("\n");
     }
 
     @Override
@@ -131,33 +131,29 @@ public class LPrintStream extends PrintStream {
             className = stackTraceElement.getClassName();
         }
 
-        try {
-            Logger logger = LoggerFactory.getLogger(LPrintStream.class.getClassLoader().loadClass(className));
+        Logger logger = LoggerFactory.getLogger(className);
 
-            switch (this.level) {
-                case INFO:
-                    logger.info(string);
-                    break;
-                case ERROR: {
-                    if (!this.isStackTraceLine(string)) {
-                        logger.error(string);
-                        break;
-                    }
-
-                    String origin = logger.getFormat();
-
-                    logger.setFormat(ColorUtil.translate("&c%message%"));
-                    logger.warn(string);
-
-                    logger.setFormat(origin);
+        switch (this.level) {
+            case INFO:
+                logger.info(string);
+                break;
+            case ERROR: {
+                if (!this.isStackTraceLine(string)) {
+                    logger.error(string);
                     break;
                 }
-                case DEBUG:
-                    logger.debug(string);
-                    break;
+
+                String origin = logger.getFormat();
+
+                logger.setFormat(ColorUtil.translate("&c%message%"));
+                logger.warn(string);
+
+                logger.setFormat(origin);
+                break;
             }
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            case DEBUG:
+                logger.debug(string);
+                break;
         }
     }
 
