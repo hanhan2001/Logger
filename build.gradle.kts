@@ -86,6 +86,18 @@ publishing {
                 }
             }
         }
+
+        repositories {
+            maven {
+                name = "logger"
+                url = uri("https://maven.pkg.github.com/312Hz/maven-repository")
+
+                credentials {
+                    username = project.findProperty("RepoUsername") as String? ?: ""
+                    password = project.findProperty("RepoPassword") as String? ?: ""
+                }
+            }
+        }
     }
 
     repositories {
